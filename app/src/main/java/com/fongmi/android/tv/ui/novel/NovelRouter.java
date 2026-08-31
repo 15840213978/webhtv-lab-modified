@@ -14,6 +14,8 @@ import com.fongmi.android.tv.bean.Flag;
 import com.fongmi.android.tv.bean.NovelSourceConfig;
 import com.fongmi.android.tv.bean.Result;
 import com.fongmi.android.tv.bean.Vod;
+import com.fongmi.android.tv.ui.web.ComicReaderActivity;
+import com.fongmi.android.tv.ui.web.NovelReaderActivity;
 import com.fongmi.android.tv.ui.web.WebReaderActivity;
 import com.fongmi.android.tv.utils.Notify;
 import com.fongmi.android.tv.utils.Sniffer;
@@ -125,6 +127,11 @@ public final class NovelRouter {
             reader.onEpisodeResolved(kind, result.getRealUrl(), extractTitle(result.getRealUrl()));
             return true;
         }
+        ReaderEngine engine = currentEngine;
+        if (engine != null) {
+            engine.onEpisodeResolved(kind, result.getRealUrl(), extractTitle(result.getRealUrl()));
+            return true;
+        }
         // 用户刚关闭阅读器（1.5 秒内）：这是返回后残留的回调，不再拉起
         if (readerClosedAt > 0 && System.currentTimeMillis() - readerClosedAt < 1500) return false;
 
@@ -139,7 +146,7 @@ public final class NovelRouter {
             if (i >= 0) index = i;
         }
 
-        Intent it = new Intent(ctx, WebReaderActivity.class);
+        Intent it = new Intent(ctx, kind == 2 ? ComicReaderActivity.class : NovelReaderActivity.class);
         it.putExtra(WebReaderActivity.EXTRA_KIND, kind);
         it.putExtra(WebReaderActivity.EXTRA_CACHE_KEY, WebReaderActivity.cacheLargeData(payload, ch));
         it.putExtra(WebReaderActivity.EXTRA_SITE_KEY, pureSiteKey(siteKey));
@@ -239,6 +246,11 @@ public final class NovelRouter {
             reader.onEpisodeResolved(kind, payload, title);
             return true;
         }
+        ReaderEngine engine = currentEngine;
+        if (engine != null) {
+            engine.onEpisodeResolved(kind, payload, title);
+            return true;
+        }
 
         // 用户刚关闭阅读器（1.5 秒内）：这是返回后残留的 playerContent 回调，不再拉起
         if (readerClosedAt > 0 && System.currentTimeMillis() - readerClosedAt < 1500) return false;
@@ -246,7 +258,7 @@ public final class NovelRouter {
         ArrayList<Episode> ch = new ArrayList<>();
         if (episodes != null) ch.addAll(episodes);
 
-        Intent it = new Intent(activity, WebReaderActivity.class);
+        Intent it = new Intent(activity, kind == 2 ? ComicReaderActivity.class : NovelReaderActivity.class);
         it.putExtra(WebReaderActivity.EXTRA_KIND, kind);
         it.putExtra(WebReaderActivity.EXTRA_CACHE_KEY, WebReaderActivity.cacheLargeData(payload, ch));
         it.putExtra(WebReaderActivity.EXTRA_SITE_KEY, pureSiteKey(siteKey));
@@ -374,7 +386,7 @@ public final class NovelRouter {
         String u = url.trim();
         int kind = u.startsWith("novel://") ? 1 : (u.startsWith("pics://") || u.startsWith("manga://")) ? 2 : 0;
         if (kind == 0) return false;
-        Intent it = new Intent(activity, WebReaderActivity.class);
+        Intent it = new Intent(activity, kind == 2 ? ComicReaderActivity.class : NovelReaderActivity.class);
         it.putExtra(WebReaderActivity.EXTRA_KIND, kind);
         it.putExtra(WebReaderActivity.EXTRA_CACHE_KEY, WebReaderActivity.cacheLargeData(u, new ArrayList<>()));
         it.putExtra(WebReaderActivity.EXTRA_VOD_NAME, title == null ? "" : title);
@@ -423,6 +435,14 @@ public final class NovelRouter {
 
     /** 当前前台的阅读器实例（用于切换章节后回传解析结果，避免重复启动）。 */
     public static volatile WebReaderActivity currentReader;
+
+    /** 当前前台的「原生」阅读器实例（ComicReaderActivity / NovelReaderActivity），切换章节时回传解析结果。 */
+    public static volatile ReaderEngine currentEngine;
+
+    /** 原生阅读器销毁时清除自身引用。 */
+    public static void clearCurrentEngine(ReaderEngine e) {
+        if (currentEngine == e) currentEngine = null;
+    }
 
     /**
      * 播放器宿主（VideoActivity 实现 NovelReaderHost，负责执行解析任务）。
@@ -494,6 +514,11 @@ public final class NovelRouter {
             reader.onEpisodeResolved(kind, payload, extractTitle(payload));
             return true;
         }
+        ReaderEngine engine = currentEngine;
+        if (engine != null) {
+            engine.onEpisodeResolved(kind, payload, extractTitle(payload));
+            return true;
+        }
 
         // 用户刚关闭阅读器（1.5 秒内），说明这是返回后残留的 playerContent 回调，
         // 不再拉起阅读器，让播放器页面正常展示。
@@ -549,7 +574,7 @@ public final class NovelRouter {
 
     public static void openReader(Context ctx, String siteKey, Flag flag, Vod vod, Episode ep, String payload) {
         ArrayList<Episode> ch = chaptersOf(flag, ep);
-        Intent it = new Intent(ctx, WebReaderActivity.class);
+        Intent it = new Intent(ctx, NovelReaderActivity.class);
         it.putExtra(WebReaderActivity.EXTRA_KIND, 1);
         it.putExtra(WebReaderActivity.EXTRA_CACHE_KEY, WebReaderActivity.cacheLargeData(payload, ch));
         it.putExtra(WebReaderActivity.EXTRA_SITE_KEY, pureSiteKey(siteKey));
@@ -563,7 +588,7 @@ public final class NovelRouter {
 
     public static void openPics(Context ctx, String siteKey, Flag flag, Vod vod, Episode ep, String payload) {
         ArrayList<Episode> ch = chaptersOf(flag, ep);
-        Intent it = new Intent(ctx, WebReaderActivity.class);
+        Intent it = new Intent(ctx, ComicReaderActivity.class);
         it.putExtra(WebReaderActivity.EXTRA_KIND, 2);
         it.putExtra(WebReaderActivity.EXTRA_CACHE_KEY, WebReaderActivity.cacheLargeData(payload, ch));
         it.putExtra(WebReaderActivity.EXTRA_SITE_KEY, pureSiteKey(siteKey));

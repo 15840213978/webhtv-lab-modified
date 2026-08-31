@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F3EF">
+
+    <!-- 左右翻页 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never" />
+
+    <!-- 上下滚动 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
+
+    <!-- 顶部毛玻璃栏 -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_gravity="top"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#D9FFFFFF"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="‹"
+            android:textColor="#1A1A2E"
+            android:textSize="24sp"
+            android:background="@drawable/bg_novel_circle" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:text="小说"
+            android:textColor="#1A1A2E"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnChapterTop"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="☰"
+            android:textColor="#1A1A2E"
+            android:textSize="18sp"
+            android:background="@drawable/bg_novel_circle" />
+
+        <TextView
+            android:id="@+id/btnKeep"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="☆"
+            android:textColor="#1A1A2E"
+            android:textSize="18sp"
+            android:background="@drawable/bg_novel_circle" />
+    </LinearLayout>
+
+    <!-- 底部控制栏 -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#E9FFFFFF"
+        android:paddingLeft="14dp"
+        android:paddingTop="8dp"
+        android:paddingRight="14dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SeekBar
+            android:id="@+id/seekPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:progressTint="#ff8c42"
+            android:thumbTint="#ff8c42" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/btnPrevChapter"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:text="上一章"
+                android:textColor="#3A3632"
+                android:textSize="12sp"
+                android:background="@drawable/bg_novel_capsule" />
+
+            <TextView
+                android:id="@+id/tvPageInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1/1"
+                android:textColor="#8A7A6A"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/btnNextChapter"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:text="下一章"
+                android:textColor="#3A3632"
+                android:textSize="12sp"
+                android:background="@drawable/bg_novel_capsule" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/btnFontMinus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="A⁻"
+                android:textColor="#3A3632"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/btnMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="模式"
+                android:textColor="#3A3632"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/btnFontPlus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="A⁺"
+                android:textColor="#3A3632"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/btnSetting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:text="设置"
+                android:textColor="#3A3632"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 设置面板遮罩 -->
+    <View
+        android:id="@+id/settingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <!-- 设置面板 -->
+    <LinearLayout
+        android:id="@+id/settingPanel"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#FAFFFFFF"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="阅读设置"
+            android:textColor="#3A3632"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="字号" android:textColor="#3A3632" android:textSize="13sp" />
+            <TextView android:id="@+id/btnSmaller" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="A⁻" android:textColor="#3A3632" android:textSize="13sp" />
+            <TextView android:id="@+id/tvFontSize" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:gravity="center" android:text="18" android:textColor="#3A3632" android:textSize="13sp" />
+            <TextView android:id="@+id/btnBigger" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="A⁺" android:textColor="#3A3632" android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="行距" android:textColor="#3A3632" android:textSize="13sp" />
+            <TextView android:id="@+id/btnLineMinus" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="−" android:textColor="#3A3632" android:textSize="16sp" />
+            <TextView android:id="@+id/tvLineSpacing" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:gravity="center" android:text="1.9" android:textColor="#3A3632" android:textSize="13sp" />
+            <TextView android:id="@+id/btnLinePlus" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="+" android:textColor="#3A3632" android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp">
+            <TextView android:id="@+id/themeWhite" android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp" android:gravity="center"
+                android:text="米白" android:textSize="12sp" android:background="#F5F3EF" />
+            <TextView android:id="@+id/themeYellow" android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp" android:gravity="center"
+                android:text="护眼" android:textSize="12sp" android:background="#F5ECD8" />
+            <TextView android:id="@+id/themeGreen" android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp" android:gravity="center"
+                android:text="浅绿" android:textSize="12sp" android:background="#E3EFE0" />
+            <TextView android:id="@+id/themeBlue" android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp" android:gravity="center"
+                android:text="浅蓝" android:textSize="12sp" android:background="#DDE9F5" />
+            <TextView android:id="@+id/themeDark" android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:gravity="center" android:text="夜间"
+                android:textSize="12sp" android:textColor="#E8ECF1" android:background="#1A1A2E" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 章节抽屉遮罩 -->
+    <View
+        android:id="@+id/chapterOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/chapterPanel"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="#FAFFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/chapterPanelTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="章节目录"
+            android:textColor="#3A3632"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvChapter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
+    </LinearLayout>
+</FrameLayout>

@@ -77,6 +77,16 @@ public class WebReaderActivity extends AppCompatActivity {
         return key;
     }
 
+    /** 供原生阅读器读取缓存数据（漫画/小说原生 Activity 共用）。 */
+    public static String getCachedPayload(String key) {
+        return key == null ? null : PAYLOAD_CACHE.get(key);
+    }
+
+    /** 供原生阅读器读取缓存章节列表。 */
+    public static ArrayList<Episode> getCachedChapters(String key) {
+        return key == null ? null : CHAPTER_CACHE.get(key);
+    }
+
     /** 清理超过 TTL 的缓存：阅读器未真正启动时没人来取，否则会留到进程结束。 */
     private static void evictStaleCache() {
         long now = System.currentTimeMillis();
