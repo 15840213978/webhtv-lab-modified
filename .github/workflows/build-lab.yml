@@ -96,45 +96,21 @@ jobs:
         shell: pwsh
         run: |
           $expected = '2ecefcaea256de4c9247aa4363ba4ef3003b1272a9d32a2b9d28f78d005fa92b3dfe6312e59584'
-
           $apksigner = Get-ChildItem -LiteralPath $env:ANDROID_HOME -Recurse -Filter 'apksigner.bat' |
             Sort-Object FullName -Descending |
             Select-Object -First 1
-
           if ($null -eq $apksigner) { throw '找不到 apksigner.bat' }
-
           Get-ChildItem -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'dist') -Filter '*.apk' | ForEach-Object {
-            Write-Host "校验 APK: $($_.Name)"
-
             $info = & $apksigner.FullName verify --print-certs $_.FullName
-
-            if ($LASTEXITCODE -ne 0) {
-              throw "APK 签名校验失败: $($_.Name)"
-            }
-
-            $digest = $info | Select-String "SHA-256 digest"
-
-            if ($null -eq $digest) {
-              throw "无法读取 APK 证书指纹: $($_.Name)"
-            }
-
-            $actual = (($digest.Line -replace '[^0-9A-Fa-f]', '')).ToLowerInvariant()
-
-            Write-Host "实际指纹: $actual"
-
+            if ($LASTEXITCODE -ne 0) { throw "APK 签名校验失败: $($_.Name)" }
+            $line = $info | Where-Object { $_ -match 'certificate SHA-256 digest:' } | Select-Object -First 1
+            if ($null -eq $line) { throw "无法读取 APK 证书指纹: $($_.Name)" }
+            $actual = (($line -replace '^.*certificate SHA-256 digest:\s*', '') -replace '[^0-9A-Fa-f]', '').ToLowerInvariant()
             if ($actual -ne $expected) {
-              throw "APK 使用错误签名: $($_.Name)，实际指纹 $actual"
+              throw "APK 使用了错误签名: $($_.Name)，实际指纹 $actual"
             }
-
             Write-Host "固定签名校验通过: $($_.Name)"
           }
-
-      - name: 上传 APK 工件
-        uses: actions/upload-artifact@v4
-        with:
-          name: WebHTV-实验室版-手机APK
-          path: dist/*.apk
-          retention-days: 30
 
       - name: 发布到 Release
         shell: bash
